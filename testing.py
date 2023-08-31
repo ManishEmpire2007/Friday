@@ -276,6 +276,6 @@ if __name__ == "__main__":
     main()
 
 #=== Upcoming features
+# code performance and reliability improvements
 # improving command and response so that they will not one and other ***
-# Adding more website links for easier access
 # Implementing additional functionalities as needed
