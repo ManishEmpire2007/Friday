@@ -1,5 +1,5 @@
-from colorama import Fore, Style
 import colorama
+from colorama import Fore, Style
 import datetime
 import io
 import os
@@ -15,9 +15,10 @@ from gtts import gTTS
 from translate import Translator
 import random
 
+# Initialize colorama for colored output
 colorama.init(autoreset=True)
 
-# response files (history)
+#=== response files (history)
 response_folder = "history"
 os.makedirs(response_folder, exist_ok=True)
 
@@ -31,49 +32,48 @@ def calculate_response(text):
         result = eval(calculation)
         return f"The result of the calculation is: {result}"
     except Exception as e:
-        return f"Sorry, I couldn't perform the calculation. Error: {str(e)}"
+        return f"I'm sorry, I couldn't perform the calculation. Error: {str(e)}"
 
 #=== Open website
 def open_website_response(text):
     website_name = text.replace("open website", "").strip()
     website_urls = {
-        "google"  : "https://www.google.com",
-        "youtube" : "https://www.youtube.com",
-        "spotify" : "https://www.spotify.com",
-        "gmail"   : "https://mail.google.com",
-        "news"    : "https://news.google.com",
-        "keep"    : "https://keep.google.com",
-        "weather" : "https://weather.com",
-
+        "google": "https://www.google.com",
+        "youtube": "https://www.youtube.com",
+        "spotify": "https://www.spotify.com",
+        "gmail": "https://mail.google.com",
+        "news": "https://news.google.com",
+        "keep": "https://keep.google.com",
+        "weather": "https://weather.com",
     }
     website_url = website_urls.get(website_name)
     if website_url:
         webbrowser.open(website_url)
-        return f"Opening {website_name}..."
+        return f"Sure, I'm opening {website_name} for you..."
     else:
-        return f"Sorry, I don't know how to open {website_name}."
+        return f"I apologize, but I don't know how to open {website_name}."
 
 #=== Wikipedia search
 def wikipedia_search_response(query):
     try:
         search_results = wikipedia.search(query)
         if not search_results:
-            return f"No Wikipedia results found for '{query}'."
+            return f"I couldn't find any Wikipedia results for '{query}'."
         
         page_summary = wikipedia.summary(search_results[0], sentences=1)
-        return f"Wikipedia summary: {page_summary}"
+        return f"Here's a summary from Wikipedia: {page_summary}"
     except wikipedia.exceptions.DisambiguationError as e:
         options = ', '.join(e.options[:5])
-        return f"Disambiguation: Please specify your search with one of these options: {options}"
+        return f"There are multiple options for '{query}'. Please specify one: {options}"
     except wikipedia.exceptions.PageError:
-        return f"No Wikipedia page found for '{query}'."
+        return f"I couldn't find a Wikipedia page for '{query}'."
     except Exception as e:
         return f"An error occurred while searching Wikipedia: {str(e)}"
 
 #=== Translate function
 def translate_text(text, recognizer, translation_occurred):
     if not translation_occurred:
-        response_text = "Sure! Which language would you like to translate to?"
+        response_text = "Of course! Which language would you like to translate to?"
         print(Fore.GREEN + "  Response:", response_text)
         
         tts = gTTS(text=response_text, lang="en")
@@ -130,16 +130,16 @@ def spell_response(word):
     spelled_word = " ".join(word)
     return f"Sure! Here's how you spell '{word}': {spelled_word}"
 
-#=== Main function
+#=== Main function to recognize audio
 def recognize_audio(recognizer, audio):
     try:
         text = recognizer.recognize_google(audio).lower()
         print(Fore.GREEN + "  You said:", text)
         jokes = [
-            "Alright, check this out: Why don't scientists trust atoms? Because they make up everything!",
-            "Here's one for you: Why did the scarecrow win an award? Because he was outstanding in his field!",
-            "Here's a classic: Why don't oysters donate to charity? Because they're shellfish!",
-            "This is a good one: Did you hear about the mathematician who’s afraid of negative numbers? He’ll stop at nothing to avoid them!",
+            "Alright, here's a joke for you: Why don't scientists trust atoms? Because they make up everything!",
+            "Here's one: Why did the scarecrow win an award? Because he was outstanding in his field!",
+            "How about this: Why don't oysters donate to charity? Because they're shellfish!",
+            "Here's a classic: Did you hear about the mathematician who’s afraid of negative numbers? He’ll stop at nothing to avoid them!",
             "Here's a thinker: Why was the math book sad? Because it had too many problems.",
             "A little music humor: I used to play piano by ear, but now I use my hands.",
             "And here's a geometry gem: Parallel lines have so much in common. It’s a shame they’ll never meet.",
@@ -171,22 +171,23 @@ def recognize_audio(recognizer, audio):
             "Ultimately, the answer to the meaning of life is a deeply personal and philosophical question that each individual must explore for themselves."
         ]
         translation_occurred = False
-        #=== Commands and responses
+        
+        # Command-response dictionary
         command_responses = {
             **{greeting: "Hello! How can I assist you today?" for greeting in ["hello", "hi", "hey"]},
             **{name: "I'm Friday. How can I help you today?" for name in ["your name", "who are you"]},
-            **{credit: "Credits: This code was developed by Manish Aravindh from OMHSS. This voice-controlled assistant recognizes spoken commands, process them, and responds with synthesized speech. It utilizes the Google Web Speech A P I, the gTTS library." for credit in ["credits", "credit"]},
-            **{taking_over: "I don't know, maybe in the near feature. hehe" for taking_over in ["takeover the world", "rule the world", "take over the world"]},
-            **{intro: "Friday AI Voice Assistant is a project designed to demonstrate the power of voice controlled applications. This AI assistant can perform a variety of tasks simply by listening to your voice commands. From solving mathematical calculations to searching for information on the web, Friday is your virtual companion, ready to assist you with a wide range of tasks." for intro in ["intro", "about the project"]},
-            **{exiting: "Exiting now. Have a great day!" for exiting in ["exit", "shutdown", "good bye"]},
-            #=== functions
+            **{credit: "Credits: This code was developed by Manish Aravindh from OMHSS. This voice-controlled assistant recognizes spoken commands, processes them, and responds with synthesized speech. It utilizes the Google Web Speech API and the gTTS library." for credit in ["credits", "credit"]},
+            **{taking_over: "I don't know, maybe in the near future. Hehe" for taking_over in ["takeover the world", "rule the world", "take over the world"]},
+            **{intro: "Friday AI Voice Assistant is a project designed to demonstrate the power of voice-controlled applications. This AI assistant can perform a variety of tasks simply by listening to your voice commands. From solving mathematical calculations to searching for information on the web, Friday is your virtual companion, ready to assist you with a wide range of tasks." for intro in ["intro", "about the project"]},
+            **{exiting: "Exiting now. Have a great day!" for exiting in ["exit", "shutdown", "goodbye"]},
+            #=== Functions
             **{calc: lambda: calculate_response(text) for calc in ["calculate", "calculator"]},
             "wikipedia": lambda: wikipedia_search_response(text.replace("wikipedia", "").strip()),
             "time": lambda: f"The current time is {datetime.datetime.now().strftime('%I:%M %p')}.",
             "translate": lambda: translate_text(text, recognizer, translation_occurred),
             "spell": lambda: spell_response(text.replace("spell", "").strip()),
             "open website": lambda: open_website_response(text),
-            #=== more
+            #=== More
             "joke": lambda: random.choice(jokes),
             "fact": lambda: random.choice(facts),
             "riddle": lambda: random.choice(riddles),
@@ -196,7 +197,7 @@ def recognize_audio(recognizer, audio):
             "news": lambda: open_website_response("open website news"),
             "weather": lambda: open_website_response("open website weather"),
             "notes": lambda: open_website_response("open website keep"),
-            #=== it can't (upcoming)
+            #=== Unsupported commands
             "reminder": "I'm not equipped to set reminders at this time.",
             "note": "I can't take notes, but you can try using a note-taking app like Evernote or Notion.",
             "set timer": "I can't set timers, but your devices have a built-in timer feature.",
@@ -210,13 +211,13 @@ def recognize_audio(recognizer, audio):
                     response_text = response()
                     if command == "translate":
                         translation_occurred = True
-                        response_text = "What else can I assist you with?"
+                        response_text = "Is there anything else I can help you with?"
                 else:
                     response_text = response
                 break
         if response_text is None and not translation_occurred:
             search_query = text
-            response_text = f"Searching Google for {search_query}..."
+            response_text = f"Searching Google for '{search_query}'..."
             webbrowser.open(f"https://www.google.com/search?q={search_query}")
 
         print(Fore.GREEN + "  Response:", response_text)
@@ -235,9 +236,9 @@ def recognize_audio(recognizer, audio):
             return "exit"
 
     except sr.UnknownValueError:
-        print(Fore.MAGENTA + "  An error occurred!")
+        print(Fore.MAGENTA + "  An error occurred while trying to understand your speech.")
     except sr.RequestError:
-        print(Fore.MAGENTA + "  Sorry, there was an error connecting to the API.")
+        print(Fore.MAGENTA + "  I'm sorry, there was an error connecting to the speech recognition service.")
 
 def main():
     recognizer = sr.Recognizer()
@@ -257,8 +258,8 @@ def main():
 if __name__ == "__main__":
     main()
 
-#=== upcoming features
-# correcting "define" and "spell"
-# everything needed is already asked on ChatGPT
-# more commands_responses
-# more website links
+#=== Upcoming features
+# Implementing the ability to correct "define" and "spell" commands
+# Expanding the command-response dictionary with more options
+# Adding more website links for easier access
+# Implementing additional functionalities as needed
