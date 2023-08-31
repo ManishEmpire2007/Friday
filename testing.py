@@ -13,6 +13,7 @@ import speech_recognition as sr
 import wikipedia
 from gtts import gTTS
 from translate import Translator
+import random
 
 colorama.init(autoreset=True)
 
@@ -124,34 +125,21 @@ def spell_response(word):
     spelled_word = " ".join(word)
     return f"Sure! Here's how you spell '{word}': {spelled_word}"
 
-#=== Define function to fetch word definitions
-def fetch_word_definition(word):
-    api_key = "b91d80395amsh67a5c63fe760c89p11a01fjsnd7dc41d4e88a"  # yeah, it is not working -_-!
-    base_url = f"https://wordsapiv1.p.rapidapi.com/words/{word}/definitions"
-
-    headers = {
-        "X-RapidAPI-Host": "wordsapiv1.p.rapidapi.com",
-        "X-RapidAPI-Key": api_key
-    }
-
-    response = requests.get(base_url, headers=headers)
-    data = response.json()
-
-    if "definitions" in data:
-        definitions = data["definitions"]
-        if definitions:
-            return definitions[0]["definition"]
-        else:
-            return f"No definitions found for '{word}'."
-    else:
-        return "An error occurred while fetching definitions."
-
 #=== Main function
 def recognize_audio(recognizer, audio):
     try:
         text = recognizer.recognize_google(audio).lower()
         print(Fore.GREEN + "  You said:", text)
-
+        # List of jokes
+        jokes = [
+            "Why don't scientists trust atoms? Because they make up everything! hehe",
+            "Here's a joke: Why did the scarecrow win an award? Because he was outstanding in his field!",
+            "Why don't oysters donate to charity? Because they're shellfish!",
+            "Did you hear about the mathematician who’s afraid of negative numbers? He’ll stop at nothing to avoid them!",
+            "Why was the math book sad? Because it had too many problems.",
+            "I used to play piano by ear, but now I use my hands.",
+            "Parallel lines have so much in common. It’s a shame they’ll never meet.",
+        ]
         translation_occurred = False
         #=== Commands and responses
         command_responses = {
@@ -170,11 +158,10 @@ def recognize_audio(recognizer, audio):
             "open website": lambda: open_website_response(text),
             "spell": lambda: spell_response(text.replace("spell", "").strip()),
             "play music": lambda: open_website_response("open website spotify"),
-            "define": lambda: fetch_word_definition(text.replace("define", "").strip()),
             #=== more
             "tell me a fact": "Sure, here's a fact: Honey never spoils!",
             "tell me a story": "Once upon a time, in a land far, far away...",
-            "joke": "Sure, I have a joke for you: Why don't scientists trust atoms? Because they make up everything! hehe",
+            "joke": lambda: random.choice(jokes),
             "riddle": "Here's a riddle for you: I speak without a mouth and hear without ears. I have no body, but I come alive with the wind. What am I?",
             "meaning of life": "Ah, the age-old question. The meaning of life can vary from person to person, but it's often a journey of self-discovery and finding purpose.",
             #=== it can't (upcoming)
@@ -213,7 +200,7 @@ def recognize_audio(recognizer, audio):
         pygame.mixer.music.load(response_filename)
         pygame.mixer.music.play()
         while pygame.mixer.music.get_busy():
-            pygame.time.Clock().tick(10)
+            pygame.time.Clock().tick(100)
 
         if "exit" in text:
             return "exit"
