@@ -130,6 +130,16 @@ def spell_response(word):
     spelled_word = " ".join(word)
     return f"Sure! Here's how you spell '{word}': {spelled_word}"
 
+#=== Get time
+def get_time_of_day():
+    current_hour = datetime.datetime.now().hour
+    if 6 <= current_hour < 12:
+        return "Good morning!"
+    elif 12 <= current_hour < 18:
+        return "Good afternoon!"
+    else:
+        return "Good evening!"
+
 #=== Main function to recognize audio
 def recognize_audio(recognizer, audio):
     try:
@@ -181,6 +191,7 @@ def recognize_audio(recognizer, audio):
             **{intro: "Friday AI Voice Assistant is a project designed to demonstrate the power of voice-controlled applications. This AI assistant can perform a variety of tasks simply by listening to your voice commands. From solving mathematical calculations to searching for information on the web, Friday is your virtual companion, ready to assist you with a wide range of tasks." for intro in ["intro", "about the project"]},
             **{exiting: "Exiting now. Have a great day!" for exiting in ["exit", "shutdown", "goodbye"]},
             #=== Functions
+            **{goods: lambda: f"{get_time_of_day()} How can I assist you today?" for goods in ["good morning", "good afternoon", "good evening"]},
             **{calc: lambda: calculate_response(text) for calc in ["calculate", "calculator"]},
             "wikipedia": lambda: wikipedia_search_response(text.replace("wikipedia", "").strip()),
             "time": lambda: f"The current time is {datetime.datetime.now().strftime('%I:%M %p')}.",
@@ -202,6 +213,12 @@ def recognize_audio(recognizer, audio):
             "note": "I can't take notes, but you can try using a note-taking app like Evernote or Notion.",
             "set timer": "I can't set timers, but your devices have a built-in timer feature.",
             "set alarm": "I'm not able to set alarms, but your device likely has an alarm clock function.",
+            "define": "I'm not equipped to provide definitions, but you can use online dictionaries like Merriam-Webster or Oxford.",
+            #=== New commands
+            "date": lambda: f"Today's is {datetime.datetime.now().strftime('%B %d, %Y')}.",
+            # "day": lambda: f"Today's is {daytime.daytime.now().strftime('%B %d, %Y')}.",
+            "how are you": "I'm just a computer program, but I appreciate you asking!",
+            "thanks": "You're welcome! If you have more questions, feel free to ask.",
         }
 
         response_text = None
@@ -259,7 +276,6 @@ if __name__ == "__main__":
     main()
 
 #=== Upcoming features
-# Implementing the ability to correct "define" and "spell" commands
-# Expanding the command-response dictionary with more options
+# improving command and response so that they will not one and other ***
 # Adding more website links for easier access
 # Implementing additional functionalities as needed
