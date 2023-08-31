@@ -37,9 +37,14 @@ def calculate_response(text):
 def open_website_response(text):
     website_name = text.replace("open website", "").strip()
     website_urls = {
-        "google": "https://www.google.com",
-        "youtube": "https://www.youtube.com",
-        "spotify": "https://www.spotify.com",
+        "google"  : "https://www.google.com",
+        "youtube" : "https://www.youtube.com",
+        "spotify" : "https://www.spotify.com",
+        "gmail"   : "https://mail.google.com",
+        "news"    : "https://news.google.com",
+        "keep"    : "https://keep.google.com",
+        "weather" : "https://weather.com",
+
     }
     website_url = website_urls.get(website_name)
     if website_url:
@@ -130,47 +135,71 @@ def recognize_audio(recognizer, audio):
     try:
         text = recognizer.recognize_google(audio).lower()
         print(Fore.GREEN + "  You said:", text)
-        # List of jokes
         jokes = [
-            "Why don't scientists trust atoms? Because they make up everything! hehe",
-            "Here's a joke: Why did the scarecrow win an award? Because he was outstanding in his field!",
-            "Why don't oysters donate to charity? Because they're shellfish!",
-            "Did you hear about the mathematician who’s afraid of negative numbers? He’ll stop at nothing to avoid them!",
-            "Why was the math book sad? Because it had too many problems.",
-            "I used to play piano by ear, but now I use my hands.",
-            "Parallel lines have so much in common. It’s a shame they’ll never meet.",
+            "Alright, check this out: Why don't scientists trust atoms? Because they make up everything!",
+            "Here's one for you: Why did the scarecrow win an award? Because he was outstanding in his field!",
+            "Here's a classic: Why don't oysters donate to charity? Because they're shellfish!",
+            "This is a good one: Did you hear about the mathematician who’s afraid of negative numbers? He’ll stop at nothing to avoid them!",
+            "Here's a thinker: Why was the math book sad? Because it had too many problems.",
+            "A little music humor: I used to play piano by ear, but now I use my hands.",
+            "And here's a geometry gem: Parallel lines have so much in common. It’s a shame they’ll never meet.",
+        ]
+        riddles = [
+            "Alright, here's a riddle for you: What has keys but can't open locks?",  # A piano
+            "How about this: I've got cities, but no houses. Forests, but no trees. Water, but no fish. What am I?",  # A map
+            "Here's a thinker: The more you take, the more you leave behind. What am I?",  # Footsteps
+            "Ever heard this one? What can travel around the world while staying in a corner?",  # A postage stamp
+            "Here's a puzzler: I've got a heart that doesn't beat. A home, but no life. What am I?",  # An artichoke
+            "Check this out: What has a face that never frowns, a bed but never sleeps, and runs but never walks?",  # A clock
+            "Here's an enigma for you: The more you look at it, the less you see. What is it?"  # Darkness
+        ]
+        facts = [
+            "Did you know? Honey never spoils, thanks to its low moisture and acidic pH.",
+            "Fascinating fact: Octopuses have three hearts: two pump blood to the gills, and one circulates it to the rest of the body.",
+            "Here's an interesting tidbit: The Great Wall of China isn't visible from space without aid, contrary to popular belief.",
+            "Mind-blowing fact: The Eiffel Tower can grow about 6 inches in height during the hot summer due to metal expansion.",
+            "Did you know? Bananas are berries, but strawberries aren't. Botanical definitions can be surprising!",
+            "Curious fact: The shortest war ever recorded lasted just 38 minutes between Britain and Zanzibar in 1896.",
+            "Fun fact: The world's oldest known recipe is for beer, hailing from ancient Mesopotamia. Cheers to history!"
+        ]
+        life = [
+            "Life is like a box of chocolates, you never know what you're gonna get.",
+            "Ah, the age-old question. The meaning of life can vary from person to person, but it's often a journey of self-discovery and finding purpose.",
+            "The meaning of life might be about creating meaningful connections and relationships with others.",
+            "Some say that the purpose of life is to seek happiness and make the most out of every moment.",
+            "The meaning of life could simply be to experience the journey, embrace challenges, and learn from every step.",
+            "Ultimately, the answer to the meaning of life is a deeply personal and philosophical question that each individual must explore for themselves."
         ]
         translation_occurred = False
         #=== Commands and responses
         command_responses = {
-            #=== fundamentals
             **{greeting: "Hello! How can I assist you today?" for greeting in ["hello", "hi", "hey"]},
             **{name: "I'm Friday. How can I help you today?" for name in ["your name", "who are you"]},
-            **{taking_over: "I don't know, maybe in the near feature. hehe" for taking_over in ["takeover the world", "rule the world", "take over the world"]},
             **{credit: "Credits: This code was developed by Manish Aravindh from OMHSS. This voice-controlled assistant recognizes spoken commands, process them, and responds with synthesized speech. It utilizes the Google Web Speech A P I, the gTTS library." for credit in ["credits", "credit"]},
+            **{taking_over: "I don't know, maybe in the near feature. hehe" for taking_over in ["takeover the world", "rule the world", "take over the world"]},
             **{intro: "Friday AI Voice Assistant is a project designed to demonstrate the power of voice controlled applications. This AI assistant can perform a variety of tasks simply by listening to your voice commands. From solving mathematical calculations to searching for information on the web, Friday is your virtual companion, ready to assist you with a wide range of tasks." for intro in ["intro", "about the project"]},
             **{exiting: "Exiting now. Have a great day!" for exiting in ["exit", "shutdown", "good bye"]},
             #=== functions
-            "translate": lambda: translate_text(text, recognizer, translation_occurred),
             **{calc: lambda: calculate_response(text) for calc in ["calculate", "calculator"]},
             "wikipedia": lambda: wikipedia_search_response(text.replace("wikipedia", "").strip()),
             "time": lambda: f"The current time is {datetime.datetime.now().strftime('%I:%M %p')}.",
-            "open website": lambda: open_website_response(text),
+            "translate": lambda: translate_text(text, recognizer, translation_occurred),
             "spell": lambda: spell_response(text.replace("spell", "").strip()),
-            "play music": lambda: open_website_response("open website spotify"),
+            "open website": lambda: open_website_response(text),
             #=== more
-            "tell me a fact": "Sure, here's a fact: Honey never spoils!",
-            "tell me a story": "Once upon a time, in a land far, far away...",
             "joke": lambda: random.choice(jokes),
-            "riddle": "Here's a riddle for you: I speak without a mouth and hear without ears. I have no body, but I come alive with the wind. What am I?",
-            "meaning of life": "Ah, the age-old question. The meaning of life can vary from person to person, but it's often a journey of self-discovery and finding purpose.",
+            "fact": lambda: random.choice(facts),
+            "riddle": lambda: random.choice(riddles),
+            "meaning of life": lambda: random.choice(life),
+            "play music": lambda: open_website_response("open website spotify"),
+            "email": lambda: open_website_response("open website gmail"),
+            "news": lambda: open_website_response("open website news"),
+            "weather": lambda: open_website_response("open website weather"),
+            "notes": lambda: open_website_response("open website keep"),
             #=== it can't (upcoming)
-            "weather": "I'm sorry, I cannot provide real-time weather information at the moment.", #should open google weather
             "reminder": "I'm not equipped to set reminders at this time.",
-            "news": "I'm sorry, I cannot provide current news updates.", #should open google news
-            "email": "I don't have the capability to send emails.", #should open gmail or icloud
             "note": "I can't take notes, but you can try using a note-taking app like Evernote or Notion.",
-            "set timer": "I can't set timers, but most devices have a built-in timer feature.",
+            "set timer": "I can't set timers, but your devices have a built-in timer feature.",
             "set alarm": "I'm not able to set alarms, but your device likely has an alarm clock function.",
         }
 
