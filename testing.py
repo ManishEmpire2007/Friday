@@ -106,10 +106,12 @@ def translate_text(text, recognizer, translation_occurred):
             print(Fore.YELLOW + f"    Translated ({target_language_code}): {translated_text}")
 
             translated_response = gTTS(text=translated_text, lang=target_language_code)
-            translated_response.save("translated_response.mp3")
+            timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
+            translated_response_filename = os.path.join(response_folder, f"translated_response_{timestamp}.mp3")
+            translated_response.save(translated_response_filename)
 
             pygame.mixer.init()
-            pygame.mixer.music.load("translated_response.mp3")
+            pygame.mixer.music.load(translated_response_filename)
             pygame.mixer.music.play()
             while pygame.mixer.music.get_busy():
                 pygame.time.Clock().tick(10)
