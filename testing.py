@@ -186,7 +186,7 @@ def recognize_audio(recognizer, audio):
         command_responses = {
             **{greeting: "Hello! How can I assist you today?" for greeting in ["hello", "hi", "hey"]},
             **{name: "I'm Friday. How can I help you today?" for name in ["your name", "who are you"]},
-            **{credit: "Credits: This code was developed by Manish Aravindh from OMHSS. This voice-controlled assistant recognizes spoken commands, processes them, and responds with synthesized speech. It utilizes the Google Web Speech API and the gTTS library." for credit in ["credits", "credit"]},
+            **{credit: "Credits: This code was developed by Manish Aravindh from OMHSS. This voice-controlled assistant recognizes spoken commands, processes them, and responds with synthesized speech. It utilizes the Google Web Speech A P I and the gTTS library." for credit in ["credits", "credit"]},
             **{taking_over: "I don't know, maybe in the near future. Hehe" for taking_over in ["takeover the world", "rule the world", "take over the world"]},
             **{intro: "Friday AI Voice Assistant is a project designed to demonstrate the power of voice-controlled applications. This AI assistant can perform a variety of tasks simply by listening to your voice commands. From solving mathematical calculations to searching for information on the web, Friday is your virtual companion, ready to assist you with a wide range of tasks." for intro in ["intro", "about the project", "tell me about yourself"]},
             **{exiting: "Exiting now. Have a great day!" for exiting in ["exit", "shutdown", "goodbye"]},
@@ -247,7 +247,7 @@ def recognize_audio(recognizer, audio):
         pygame.mixer.music.load(response_filename)
         pygame.mixer.music.play()
         while pygame.mixer.music.get_busy():
-            pygame.time.Clock().tick(100)
+            pygame.time.Clock().tick(2.5)
 
         if "exit" in text:
             return "exit"
@@ -264,7 +264,7 @@ def main():
             try:
                 with sr.Microphone() as source:
                     print(Fore.GREEN + Style.BRIGHT + "Listening... {")
-                    audio = recognizer.listen(source, timeout=1.5)  # Adjust the timeout as needed
+                    audio = recognizer.listen(source, timeout=2.5)  # Adjust the timeout as needed
                     recognized_text = recognize_audio(recognizer, audio)
                     print(Fore.GREEN + Style.BRIGHT + "} ")
 
@@ -277,5 +277,3 @@ if __name__ == "__main__":
 
 #=== Upcoming features
 # improving command and response so that they will not one and other ***
-# Adding more website links for easier access
-# Implementing additional functionalities as needed
