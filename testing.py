@@ -14,8 +14,9 @@ import wikipedia
 from gtts import gTTS
 from translate import Translator
 import random
+import concurrent.futures
 
-# Initialize colorama for colored output
+# Initializations
 colorama.init(autoreset=True)
 
 #=== response files (history)
@@ -145,6 +146,7 @@ def recognize_audio(recognizer, audio):
     try:
         text = recognizer.recognize_google(audio).lower()
         print(Fore.GREEN + "  You said:", text)
+        translation_occurred = False
         jokes = [
             "Alright, here's a joke for you: Why don't scientists trust atoms? Because they make up everything!",
             "Here's one: Why did the scarecrow win an award? Because he was outstanding in his field!",
@@ -180,15 +182,13 @@ def recognize_audio(recognizer, audio):
             "The meaning of life could simply be to experience the journey, embrace challenges, and learn from every step.",
             "Ultimately, the answer to the meaning of life is a deeply personal and philosophical question that each individual must explore for themselves."
         ]
-        translation_occurred = False
-        
         # Command-response dictionary
         command_responses = {
             **{greeting: "Hello! How can I assist you today?" for greeting in ["hello", "hi", "hey"]},
             **{name: "I'm Friday. How can I help you today?" for name in ["your name", "who are you"]},
             **{credit: "Credits: This code was developed by Manish Aravindh from OMHSS. This voice-controlled assistant recognizes spoken commands, processes them, and responds with synthesized speech. It utilizes the Google Web Speech API and the gTTS library." for credit in ["credits", "credit"]},
             **{taking_over: "I don't know, maybe in the near future. Hehe" for taking_over in ["takeover the world", "rule the world", "take over the world"]},
-            **{intro: "Friday AI Voice Assistant is a project designed to demonstrate the power of voice-controlled applications. This AI assistant can perform a variety of tasks simply by listening to your voice commands. From solving mathematical calculations to searching for information on the web, Friday is your virtual companion, ready to assist you with a wide range of tasks." for intro in ["intro", "about the project"]},
+            **{intro: "Friday AI Voice Assistant is a project designed to demonstrate the power of voice-controlled applications. This AI assistant can perform a variety of tasks simply by listening to your voice commands. From solving mathematical calculations to searching for information on the web, Friday is your virtual companion, ready to assist you with a wide range of tasks." for intro in ["intro", "about the project", "tell me about yourself"]},
             **{exiting: "Exiting now. Have a great day!" for exiting in ["exit", "shutdown", "goodbye"]},
             #=== Functions
             **{goods: lambda: f"{get_time_of_day()} How can I assist you today?" for goods in ["good morning", "good afternoon", "good evening"]},
@@ -259,23 +259,23 @@ def recognize_audio(recognizer, audio):
 
 def main():
     recognizer = sr.Recognizer()
-    while True:
-        try:
-            with sr.Microphone() as source:
-                print(Fore.GREEN + Style.BRIGHT + "Listening... {")
-                audio = recognizer.listen(source)
-                recognized_text = recognize_audio(recognizer, audio)
-                print(Fore.GREEN + Style.BRIGHT + "} ")
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        while True:
+            try:
+                with sr.Microphone() as source:
+                    print(Fore.GREEN + Style.BRIGHT + "Listening... {")
+                    audio = recognizer.listen(source, timeout=1.5)  # Adjust the timeout as needed
+                    recognized_text = recognize_audio(recognizer, audio)
+                    print(Fore.GREEN + Style.BRIGHT + "} ")
 
-                if recognized_text == "exit":
-                    break
-        except Exception as e:
-            print(Fore.MAGENTA + f"  An unexpected error occurred: {str(e)}")
-
+                    if recognized_text == "exit":
+                        break
+            except Exception as e:
+                print(Fore.MAGENTA + f"  An unexpected error occurred: {str(e)}")
 if __name__ == "__main__":
     main()
 
 #=== Upcoming features
-# code performance and reliability improvements
 # improving command and response so that they will not one and other ***
+# Adding more website links for easier access
 # Implementing additional functionalities as needed
