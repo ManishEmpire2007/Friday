@@ -1,21 +1,21 @@
-import colorama
-from colorama import Fore, Style
+import speech_recognition as sr
+from gtts import gTTS
+import pygame
+from translate import Translator
+import random
+import wikipedia
+import webbrowser
+import requests
+import tempfile
+import threading
 import datetime
 import io
 import os
 import re
-import requests
-import tempfile
-import threading
-import webbrowser
-import pygame
-import speech_recognition as sr
-import wikipedia
-from gtts import gTTS
-from translate import Translator
-import random
+import colorama
+from colorama import Fore, Style
 
-# Initialize colorama for colored output
+# Initialization
 colorama.init(autoreset=True)
 
 #=== response files (history)
@@ -120,7 +120,7 @@ def translate_text(text, recognizer, translation_occurred):
             pygame.mixer.music.load(translated_response_filename)
             pygame.mixer.music.play()
             while pygame.mixer.music.get_busy():
-                pygame.time.Clock().tick(10)
+                pygame.time.Clock().tick(1)
         else:
             print(Fore.YELLOW + f"    Translation to {target_language} is not supported.")
             return
@@ -247,7 +247,7 @@ def recognize_audio(recognizer, audio):
         pygame.mixer.music.load(response_filename)
         pygame.mixer.music.play()
         while pygame.mixer.music.get_busy():
-            pygame.time.Clock().tick(100)
+            pygame.time.Clock().tick(5)
 
         if "exit" in text:
             return "exit"
