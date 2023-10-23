@@ -13,5 +13,3 @@ The project boasts several benefits that make it a valuable tool for users:
 Additionally, the project has merits such as personalized responses, Wikipedia integration, and potential for further expansion.
 
 <hr />
-
-Modules => pip3 install SpeechRecognition gtts pygame wikipedia-api wikipedia requests colorama
